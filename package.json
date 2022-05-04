@@ -18,6 +18,8 @@
   "homepage": "https://github.com/GeoDaCenter/air-quality-idw#readme",
   "dependencies": {
     "axios": "^0.27.2",
-    "dayjs": "^1.11.1"
+    "dayjs": "^1.11.1",
+    "dotenv": "^16.0.0",
+    "papaparse": "^5.3.2"
   }
 }
