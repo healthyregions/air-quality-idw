@@ -1,4 +1,4 @@
-Package: air-quality-idw
+Package: airQualityIdw
 Title: Interpolates MS Air Quality Sensor Data to Grid of Chicago
 Version: 0.0.0.9000
 Authors@R: 
