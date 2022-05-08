@@ -65,6 +65,9 @@ jobs:
       - name: Interpolate Data
         run: Rscript Interpolation/InterpolateReadings.R
       
+      - name: postprocess data
+        run: python py/post.py
+        
       # UPLOAD AND COMMIT
       - name: execute s3 push
         run: python py/upload.py

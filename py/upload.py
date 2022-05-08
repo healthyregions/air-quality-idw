@@ -17,6 +17,7 @@ files_to_upload = [
     'data_summary.csv',
     'raw_data.csv',
     'interpolated_data.csv',
+    'processed_data.csv'
 ]
 # %%
 

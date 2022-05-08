@@ -22,7 +22,7 @@ grid <- chicago %>% st_make_grid(n = c(200,400), what="centers") %>%
   st_sf() %>% st_join(y=chicago, left=FALSE) %>%
   select(namelsad10) %>% rename(Tract = namelsad10)
 pts = st_coordinates(grid) %>% as.data.frame()
-colnames(pts) = c("Longitude", "Latitude")
+colnames(pts) = c("longitude", "latitude")
 
 
 #' Interpolation function
@@ -33,16 +33,16 @@ colnames(pts) = c("Longitude", "Latitude")
 #'
 idw_interp <- function(data, newdata, var_names){
   pts = st_coordinates(newdata) %>% as.data.frame()
-  colnames(pts) = c("Longitude", "Latitude")
+  colnames(pts) = c("longitude", "latitude")
 
   for (i in 1:length(var_names)){
     interps = idw(values=unlist(data[, var_names[i]]),
-                  coords=cbind(data$Longitude, data$Latitude),
+                  coords=cbind(data$longitude, data$latitude),
                   grid=pts)
     newdata[, var_names[i]] = interps
   }
-  newdata$Longitude = pts$Longitude
-  newdata$Latitude = pts$Latitude
+  newdata$longitude = pts$longitude
+  newdata$latitude = pts$latitude
 
   return(newdata)
 }
@@ -58,7 +58,5 @@ tract_readings = idw %>% as_tibble() %>% select(-geometry) %>%
 tract_readings = tract_readings %>%
   left_join(chicago %>% select(namelsad10), by=c("Tract" = "namelsad10"))
 
-write_csv(idw, file=paste0(path_to_data, "interpolated_data.csv"),
-          row.names=F)
-st_write(tract_readings, file=paste0(path_to_data, "tracts.geojson"),
-         row.names=F)
+write_csv(idw, file=paste0(path_to_data, "interpolated_data.csv"))
+# st_write(tract_readings, file=paste0(path_to_data, "tracts.geojson"))
