@@ -38,6 +38,7 @@ def mergeIds(data):
 def getData():
     temp_dir = path.join("temp", "raw_data.csv")
     data = pd.read_csv(temp_dir)[["msrDeviceNbr","longitude","latitude","readingDateTimeLocal","calibratedPM25"]]
+    data = data[(data.calibratedPM25 > 0) & (data.calibratedPM25.notnull())]
     data['DATEOBJ'] = data['readingDateTimeLocal'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d %H:%M:%S'))
     data['IS_WEEKEND'] = data['DATEOBJ'].apply(lambda x: x.dayofweek >= 5)
     merged_ids = mergeIds(data)
