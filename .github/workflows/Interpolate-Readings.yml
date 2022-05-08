@@ -6,36 +6,69 @@ on:
   schedule:
   # Runs on UCT time 12:00 pm = Central Time 6:00 am everyday in standard time
     - cron: '0 12 * * *'
-
+  workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 
 jobs:
-  build:
+  interpolate:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         r-version: ['4.1']
+        node-version: [12.x, 14.x]
 
     steps:
       - uses: actions/checkout@master
+      
+      # NODE
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: install node packages
+        run: npm install
+
+      - name: get data
+        run: node js/fetchData
+        env:
+          API_KEY: ${{secrets.AQ_API_KEY}}
+
+      # PYTHON
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.7' # install the python version needed
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r py/requirements.txt
+         
+      - name: summarize data
+        run: python py/summarize.py
+
+      # R
       - name: Set up R ${{ matrix.r-version }}
         uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.R }}
+
       - name: Install packages
         uses: r-lib/actions/setup-r-dependencies@v1
         with:
           cache-version: 1
           extra-packages: tidyverse, readr, phylin, sf
           needs: website, coverage
+
       - name: Interpolate Data
         run: Rscript Interpolation/InterpolateReadings.R
-      - name: Commit files
-        run: |
-          git config --local user.email "yahmskeano@gmail.com"
-          git config --local user.name "yahmskeano"
-          git pull
-          git add --all
-          git commit -am "Interpolating Data"
-          git push
+      
+      # UPLOAD AND COMMIT
+      - name: execute s3 push
+        run: python py/upload.py
+        env:
+          S3_DEPLOYER_ID: ${{ secrets.S3_DEPLOYER_ID }}
+          S3_DEPLOYER_KEY: ${{ secrets.S3_DEPLOYER_KEY }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}

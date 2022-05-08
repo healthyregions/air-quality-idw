@@ -6,10 +6,10 @@ library(tidyverse)
 library(phylin)
 library(sf)
 
-path_to_data <- ""
+path_to_data <- "../temp"
 
 # Import Sensor data
-data <- read_csv(paste0(path_to_data, "data.csv"))
+data <- read_csv(paste0(path_to_data, "data_summary.csv"))
 data$Date = as.Date(data$ReadingDateTimeLocal)
 
 
