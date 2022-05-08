@@ -25,7 +25,7 @@ async function getDeviceList() {
     },
   })
     .then((r) => r.data)
-    .catch((e) => console.log("Failed to get device list", API_KEY.length));
+    .catch((e) => console.log("Failed to get device list", e));
 
   write(Papa.unparse(response), "deviceList.csv");
   return response
