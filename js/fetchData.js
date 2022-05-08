@@ -3,7 +3,6 @@ const dayjs = require("dayjs");
 const fs = require("fs");
 const path = require("path");
 const Papa = require('papaparse');
-const cliProgress = require('cli-progress');
 require("dotenv").config();
 
 const API_KEY = process.env.API_KEY;
@@ -25,10 +24,12 @@ async function getDeviceList() {
     headers: {
       ApiKey: API_KEY,
     },
-  });
-  const responseJson = response.data;
-  write(Papa.unparse(responseJson), 'deviceList.csv');
-  return responseJson.map((r) => r["msrDeviceNbr"]).filter((val, idx, self) => self.indexOf(val) === idx);
+  })
+    .then((r) => r.data)
+    .catch((e) => console.log('Failed to get device list', API_KEY.length));
+
+  write(Papa.unparse(response), 'deviceList.csv');
+  return response.map((r) => r["msrDeviceNbr"]).filter((val, idx, self) => self.indexOf(val) === idx);
 }
 
 async function generateUrls() {
@@ -58,22 +59,20 @@ async function main() {
   let data = []
   const t0 = Date.now();
   const urls = await generateUrls();
-  const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-  bar1.start(urls.length, 0);
-
+  console.log(`Fetching ${urls.length} data endpoints...`)
   for (let i = 0; i < urls.length; i++) {
+    console.log(`Fetching ${i + 1} of ${urls.length} (${((i / urls.length) * 100).toFixed(1)}%)`)
     const batch = await get(urls[i])
     if (batch.length) {
       data = [...data, ...batch]
     }
-    bar1.update(i);
   }
+  console.log(`Data fetched successfully, ${data.length} records in ${Date.now() - t0}ms`)
   const csvString = Papa.unparse(data, {
     header: true
   })
 
   write(csvString, 'raw_data.csv');
-  console.log(`\n Finished in ${Date.now() - t0}ms`);
   return true
 }
 
