@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         r-version: ['4.1']
-        node-version: [12.x, 14.x]
+        node-version: [14.x]
 
     steps:
       - uses: actions/checkout@master
