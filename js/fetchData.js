@@ -17,6 +17,7 @@ function getDays() {
 }
 
 async function getDeviceList() {
+  console.log(`UNSAFE ${API_KEY}`)
   const response = await axios({
     method: "get",
     url: `${BASE_URL}/GetDeviceList?DeploymentName=Chicago`,
