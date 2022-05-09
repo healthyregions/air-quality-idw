@@ -59,4 +59,8 @@ tract_readings = tract_readings %>%
   left_join(chicago %>% select(namelsad10), by=c("Tract" = "namelsad10"))
 
 write_csv(idw, file=paste0(path_to_data, "interpolated_data.csv"))
-# st_write(tract_readings, file=paste0(path_to_data, "tracts.geojson"))
+
+tract_readings_output = tract_readings %>% select(Tract, mean)
+write_csv(tract_readings_output, file=paste0(path_to_data, "tract_readings.csv"))
+
+st_write(tract_readings, file=paste0(path_to_data, "tracts.geojson"))
