@@ -15,11 +15,12 @@ data_dir = os.path.join(repo_root, 'temp')
 
 files_to_upload = [
     'data_summary.csv',
-    'raw_data.csv',
     'interpolated_data.csv',
     'processed_data.csv',
-    'tract_readings.csv',
-    'tracts.geojson'
+    'tract_readings.csv'
+]
+files_to_archive = [
+    'raw_data.csv'
 ]
 # %%
 
@@ -41,6 +42,8 @@ if __name__ == '__main__':
 
     for file in files_to_upload:
         write_to_s3(file, s3, BUCKET_NAME, 'data', data_dir)
+    
+    for file in files_to_archive:
         write_to_s3(file, s3, BUCKET_NAME, 'archive', data_dir, prefix=today)
 
     print('Upload complete.')

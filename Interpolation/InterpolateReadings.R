@@ -20,7 +20,7 @@ data <- read_csv(paste0(path_to_data, "data_summary.csv"))
 chicago = st_read("Interpolation/tracts.shp")
 grid <- chicago %>% st_make_grid(n = c(200,400), what="centers") %>%
   st_sf() %>% st_join(y=chicago, left=FALSE) %>%
-  select(namelsad10) %>% rename(Tract = namelsad10)
+  select(geoid10) %>% rename(Tract = geoid10)
 pts = st_coordinates(grid) %>% as.data.frame()
 colnames(pts) = c("longitude", "latitude")
 
@@ -56,11 +56,13 @@ idw = idw_interp(data, grid, var_names=var_names)
 tract_readings = idw %>% as_tibble() %>% select(-geometry) %>%
   group_by(Tract) %>% summarise(across(everything(), mean, na.rm=TRUE))
 tract_readings = tract_readings %>%
-  left_join(chicago %>% select(namelsad10), by=c("Tract" = "namelsad10"))
+  left_join(chicago %>% select(geoid10), by=c("Tract" = "geoid10"))
 
+# idw tabular
 write_csv(idw, file=paste0(path_to_data, "interpolated_data.csv"))
-
-tract_readings_output = tract_readings %>% select(Tract, mean)
+# tracts geo
+# st_write(tract_readings, file=paste0(path_to_data, "tracts.geojson"))
+# tracts tabular
+tract_readings_output = tract_readings %>% select(Tract, topline_median)
 write_csv(tract_readings_output, file=paste0(path_to_data, "tract_readings.csv"))
 
-st_write(tract_readings, file=paste0(path_to_data, "tracts.geojson"))
