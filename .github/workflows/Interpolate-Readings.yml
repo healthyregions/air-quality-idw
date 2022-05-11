@@ -75,3 +75,4 @@ jobs:
           S3_DEPLOYER_ID: ${{ secrets.S3_DEPLOYER_ID }}
           S3_DEPLOYER_KEY: ${{ secrets.S3_DEPLOYER_KEY }}
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          DISTRIBUTION_ID: ${{ secrets.DISTRIBUTION_ID }}
