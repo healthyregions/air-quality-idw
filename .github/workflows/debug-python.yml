@@ -70,7 +70,7 @@ jobs:
         
       # UPLOAD AND COMMIT
       - name: execute s3 push
-        run: python py/debug_upload.py
+        run: python py/upload.py
         env:
           S3_DEPLOYER_ID: ${{ secrets.S3_DEPLOYER_ID }}
           S3_DEPLOYER_KEY: ${{ secrets.S3_DEPLOYER_KEY }}
