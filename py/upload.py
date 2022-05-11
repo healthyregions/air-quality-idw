@@ -50,11 +50,12 @@ if __name__ == '__main__':
 
     print('Upload complete.')
 
-    cf_client = boto3.resource('cloudfront',
+    cf_client = boto3.client('cloudfront',
             aws_access_key_id=AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+            )
     timestamp = date.today().strftime("%b-%d-%Y-%m-%s")
-    response = client.create_invalidation(
+    response = cf_client.create_invalidation(
         DistributionId=DISTRIBUTION_ID,
         InvalidationBatch={
             'Paths': {
@@ -65,4 +66,5 @@ if __name__ == '__main__':
             },
             'CallerReference': timestamp
         }
-)
+    )
+    print('Cache invalidated.')
