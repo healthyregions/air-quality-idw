@@ -37,18 +37,18 @@ def write_to_s3(filename, s3, bucket, subfolder, pathToFolder, prefix=""):
 #%%
 if __name__ == '__main__':
 
-    # client = boto3.resource('s3',
-    #         aws_access_key_id=AWS_ACCESS_KEY_ID,
-    #         aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-    # s3 = client.Bucket(BUCKET_NAME)
+    client = boto3.resource('s3',
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    s3 = client.Bucket(BUCKET_NAME)
 
-    # for file in files_to_upload:
-    #     write_to_s3(file, s3, BUCKET_NAME, 'data', data_dir)
+    for file in files_to_upload:
+        write_to_s3(file, s3, BUCKET_NAME, 'data', data_dir)
     
-    # for file in files_to_archive:
-    #     write_to_s3(file, s3, BUCKET_NAME, 'archive', data_dir, prefix=today)
+    for file in files_to_archive:
+        write_to_s3(file, s3, BUCKET_NAME, 'archive', data_dir, prefix=today)
 
-    # print('Upload complete.')
+    print('Upload complete.')
 
     cf_client = boto3.client('cloudfront',
             aws_access_key_id=AWS_ACCESS_KEY_ID,
