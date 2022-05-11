@@ -1,4 +1,5 @@
 # %%
+import json
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -37,10 +38,14 @@ def mergeIds(data):
 
 def getData():
     temp_dir = path.join("temp", "raw_data.csv")
-    data = pd.read_csv(temp_dir)[["msrDeviceNbr","longitude","latitude","readingDateTimeLocal","calibratedPM25"]]
-    data = data[(data.calibratedPM25 > 0) & (data.calibratedPM25.notnull())]
+
+    data = pd.read_csv(temp_dir)
+    data = data[(data.calibratedPM25 > 0) & (data.calibratedPM25.notnull()) & (data.calibrationVersion != 'None')]
+    data = data[["msrDeviceNbr","longitude","latitude","readingDateTimeLocal","calibratedPM25"]]
+
     data['DATEOBJ'] = data['readingDateTimeLocal'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d %H:%M:%S'))
     data['IS_WEEKEND'] = data['DATEOBJ'].apply(lambda x: x.dayofweek >= 5)
+    
     merged_ids = mergeIds(data)
     data = data.merge(merged_ids, on=['latitude', 'longitude'], how='left')
     return data.set_index('DATEOBJ')
@@ -67,7 +72,10 @@ def main():
     dataframes = [geo, summary, rushHour_summary, weekend_summary, weekday_summary]
     return {
         "df": reduce(lambda left, right:pd.merge(left, right, on=['device_id'], how='inner'), dataframes),
-        "timestamp": data.readingDateTimeLocal.max()
+        "timestamp": {
+            "start": data.readingDateTimeLocal.min(),
+            "end": data.readingDateTimeLocal.max()
+        }
     }
                         
 # %%
@@ -75,6 +83,8 @@ if __name__ == "__main__":
     data = main()
     df = data["df"]
     timestamp = data["timestamp"]
+    with open(path.join('temp', 'timestamp.json'), 'w') as outfile:
+        outfile.write(json.dumps(timestamp))
     print('Data summarized.')
     df.to_csv(path.join("temp", "data_summary.csv"), index=False)
 # %%

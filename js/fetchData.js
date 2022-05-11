@@ -3,13 +3,15 @@ const dayjs = require("dayjs");
 const fs = require("fs");
 const path = require("path");
 const Papa = require("papaparse");
-
+// require('dotenv').config()
 const API_KEY = process.env.API_KEY;
 const BASE_URL = "https://urban.microsoft.com/api/EclipseData";
 
+const DAYS_DELAY = 14;
+
 function getDays() {
-  const yesterday = dayjs().subtract(1, "day").toISOString().slice(0, 10);
-  const lastWeek = dayjs().subtract(8, "day").toISOString().slice(0, 10);
+  const yesterday = dayjs().subtract(DAYS_DELAY, "day").toISOString().slice(0, 10);
+  const lastWeek = dayjs().subtract(DAYS_DELAY + 7, "day").toISOString().slice(0, 10);
   return {
     yesterday,
     lastWeek,
