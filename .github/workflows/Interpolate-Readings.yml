@@ -3,9 +3,8 @@
 name: Automatic Interpolation v5
 
 on:
-  # schedule:
-  # # Runs on UCT time 12:00 pm = Central Time 6:00 am everyday in standard time
-  #   - cron: '0 12 * * *'
+  schedule:
+    - cron: '0 0 * * 1'
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel

@@ -7,7 +7,7 @@ const Papa = require("papaparse");
 const API_KEY = process.env.API_KEY;
 const BASE_URL = "https://urban.microsoft.com/api/EclipseData";
 
-const DAYS_DELAY = 14;
+const DAYS_DELAY = 1;
 
 function getDays() {
   const yesterday = dayjs().subtract(DAYS_DELAY, "day").toISOString().slice(0, 10);
