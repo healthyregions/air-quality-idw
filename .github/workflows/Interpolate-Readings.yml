@@ -12,19 +12,15 @@ on:
 jobs:
   interpolate:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        r-version: ['4.3']
-        node-version: [14.x]
 
     steps:
       - uses: actions/checkout@master
       
       # NODE
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14.x
 
       - name: install node packages
         run: npm install
@@ -38,7 +34,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7.7' # install the python version needed
+          python-version: 3.11.x
 
       - name: install python packages
         run: |
@@ -49,10 +45,10 @@ jobs:
         run: python py/summarize.py
 
       # R
-      - name: Set up R ${{ matrix.r-version }}
+      - name: Set up R 4.3
         uses: r-lib/actions/setup-r@v1
         with:
-          r-version: ${{ matrix.R }}
+          r-version: 4.3
 
       - name: Install packages
         uses: r-lib/actions/setup-r-dependencies@v1
